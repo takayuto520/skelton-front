@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <div class="p-10">
-    <h1 class="text-3xl font-bold text-blue-500">Tailwind Test</h1>
+  <div id="app">
+    <header class="bg-blue-500 text-white p-4">
+      <h1 class="text-2xl font-bold">Vue 3 アプリケーション</h1>
+    </header>
+    <main class="container mx-auto p-4">
+      <RouterView />
+    </main>
   </div>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
+#app {
+  min-height: 100vh;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

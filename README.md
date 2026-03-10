@@ -109,9 +109,111 @@ src/
 
 ## テスト
 
-- コンポーネントテスト：Vitest + Vue Test Utilsを使用
-- テストファイル：`*.spec.ts`または`*.test.ts`
-- カバレッジ目標：80%以上
+### テスト方針
+
+- **テストファースト**: 新機能開発時は、まずテストを書いてから実装を行う（TDD）
+- **包括的なテスト**: ユニットテスト、統合テスト、E2Eテストを組み合わせる
+- **継続的テスト**: CI/CDパイプラインで自動実行
+- **テスト品質**: テストは本番コードと同等の品質で記述
+
+### 使用ツール
+
+- **ユニットテスト**: Vitest + @vue/test-utils
+- **テストファイル命名**: `*.spec.ts` または `*.test.ts`
+- **テスト環境**: jsdom（DOM操作のテスト用）
+- **アサーション**: Vitestのexpectを使用
+
+### テスト実行方法
+
+```bash
+# 継続監視モード（ファイル変更時に自動実行）
+npm test
+
+# 一度だけ実行
+npm test -- --run
+
+# カバレッジレポート生成
+npm test -- --coverage
+
+# 特定のテストファイル実行
+npm test dateUtils.spec.ts
+
+# UIモード（ブラウザでテスト実行）
+npm test -- --ui
+```
+
+### カバレッジ目標
+
+- **全体カバレッジ**: 80%以上
+- **ブランチカバレッジ**: 75%以上
+- **関数カバレッジ**: 90%以上
+- **行カバレッジ**: 80%以上
+
+### テストの種類と書き方
+
+#### ユニットテスト
+
+- **対象**: 個別の関数、コンポーネント、ユーティリティ
+- **原則**: 外部依存をモック化し、単体機能をテスト
+- **例**: dateUtils.spec.ts
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { formatDate } from "@/utils/dateUtils";
+
+describe("formatDate", () => {
+  it("should format date correctly", () => {
+    const date = new Date(2024, 0, 15);
+    expect(formatDate(date)).toBe("2024-01-15");
+  });
+});
+```
+
+#### コンポーネントテスト
+
+- **対象**: Vueコンポーネント
+- **ツール**: @vue/test-utils
+- **テスト内容**: レンダリング、イベント、プロパティ、emit
+
+```typescript
+import { describe, it, expect } from "vitest";
+import { mount } from "@vue/test-utils";
+import UserCard from "@/components/UserCard.vue";
+
+describe("UserCard", () => {
+  it("renders user name and email", () => {
+    const user = { id: 1, name: "John", email: "john@example.com" };
+    const wrapper = mount(UserCard, { props: { user } });
+
+    expect(wrapper.text()).toContain("John");
+    expect(wrapper.text()).toContain("john@example.com");
+  });
+});
+```
+
+#### ストアテスト
+
+- **対象**: Piniaストア
+- **テスト内容**: 状態変更、アクション、ゲッター
+
+#### APIサービステスト
+
+- **対象**: servicesフォルダの関数
+- **モック**: fetch APIをモック化
+
+### テストベストプラクティス
+
+- **AAAパターン**: Arrange（準備）- Act（実行）- Assert（検証）
+- **テストデータの分離**: テスト専用データをfixtureとして管理
+- **モックの使用**: 外部APIや複雑な依存をモック
+- **テストの独立性**: 各テストは他のテストに依存しない
+- **記述的なテスト名**: 何をテストしているかが明確にわかる名前
+
+### CI/CDでのテスト
+
+- **プッシュ時自動実行**: GitHub Actionsなどでテストを実行
+- **カバレッジレポート**: プルリクエスト時にレポートを生成
+- **品質ゲート**: カバレッジが基準を下回る場合はマージをブロック
 
 ## コミットメッセージ
 
@@ -148,3 +250,18 @@ src/
 - 命名規則の遵守
 - 型の適切な使用
 - エラーハンドリング
+
+## サンプルファイル
+
+このプロジェクトはひな型として使用できるよう、各ディレクトリにサンプルファイルを追加しています：
+
+- `components/UserCard.vue`: ユーザー情報を表示するコンポーネント
+- `views/Home.vue`: ホームページのビューコンポーネント
+- `stores/userStore.ts`: ユーザー管理のPiniaストア
+- `types/User.type.ts`: ユーザー関連のTypeScript型定義
+- `utils/dateUtils.ts`: 日付操作のユーティリティ関数
+- `router/index.ts`: Vue Routerの設定
+- `services/apiService.ts`: API通信のサービス関数
+- `assets/README.txt`: アセットフォルダの説明
+
+これらのファイルを参考に、実際のアプリケーション開発を行ってください。
